@@ -18,15 +18,15 @@ const connectionUri = {
 /* http://localhost:3000/ */
 app.get("/", (req, res) => res.send("Hello, NodeJS!"));
 
-/* http://localhost:3000/messages */
-app.get("/messages", async (req, res) => {
+/* http://localhost:3000/list_all_purchase */
+app.get("/list_all_purchase", async (req, res) => {
   let list = [];
   let connection = createConnection(connectionUri);
   bluebird.promisifyAll(connection);
 
   await connection.connectAsync();
 
-  let sql = `SELECT * FROM message `;
+  let sql = `SELECT * FROM product `;
   list = await connection.queryAsync(sql);
 
   await connection.endAsync();
@@ -34,18 +34,20 @@ app.get("/messages", async (req, res) => {
   res.json(list);
 });
 
-/* http://localhost:3000/message */
-app.post("/message", async (req, res) => {
+/* http://localhost:3000/product */
+app.post("/product", async (req, res) => {
   let connection = createConnection(connectionUri);
   bluebird.promisifyAll(connection);
 
   await connection.connectAsync();
 
-  let message = req.body.message;
-  let reply = req.body.reply;
+  let prodName = req.body.prodName;
+  let prodQuantity = req.body.prodQuantity;
+  let prodPrice = req.body.prodPrice;
+
   // let sql = `INSERT INTO message (message, reply) VALUES ('${message}', ${reply})`;
-  let sql = `INSERT INTO message (message, reply) VALUES (?, ?)`;
-  await connection.queryAsync(sql, [message, reply]);
+  let sql = `INSERT INTO message (prodName, prodQuantity, prodPrice) VALUES (?, ?, ?)`;
+  await connection.queryAsync(sql, [prodName, prodQuantity, prodPrice]);
 
   await connection.endAsync();
 
@@ -53,4 +55,4 @@ app.post("/message", async (req, res) => {
   res.json(output);
 });
 
-app.listen(3000);
+app.listen(3001);
